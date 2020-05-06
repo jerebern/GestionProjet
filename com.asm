@@ -4,14 +4,15 @@
 ;									VOIR UTLISATIONASCII.TXT					
 ;===========================================================================================================================================================================		 
 
-Analyse_RxCom                          PROC NEAR					;void Analyse_RxCom(rxcar)	{
+Analyse_RxCom                          PROC NEAR					;Analyse_RxCom(RxNonValide,RX,continuer,MessageVictoire,MessagePerdu)	{
 
 	
 						RXPos			  EQU	   <WORD PTR[BP-2]>
 						rxcar			  EQU	   <WORD PTR[BP+4]>	
 						Valide			  EQU 	   <WORD PTR[BP+6]>
-						ArretPartie		  EQU 	   <WORD PTR[BP+8]>	
-
+						ArretPartie		  EQU 	   <WORD PTR[BP+8]>
+						MSG1		  	  EQU 	   <WORD PTR[BP+10]>
+						MSG2			  EQU 	   <WORD PTR[BP+12]>
 						
 			 PUSH BP
 			 MOV BP,SP
@@ -67,15 +68,12 @@ eswitch_rxCom1_c_103:								;}
 switch_rxCom1_c_104	:								;case(104){				;104 = Perdu	 -> Affiche un ptit message
 			CMP rxcar,104
 			JNE eswitch_rxCom1_c_104
-			
-			MOV  AL,"VOUS AVEZ PERDU$"
-			MOV  DX OFFSET AL
-			
-			PUSH DX	
+		
+			PUSH MSG1	
 			CALL Ecrire_Chaine						;Ecrire_Chaine("VOUS AVEZ PERDU")
-			POP DX
+			POP MSG1
 			
-			MOV Valide,0							;Valide = false
+			MOV Valide, 0							;Valide = false
 			
 			JMP eswitch_rxCom1						;break
 eswitch_rxCom1_c_104:								;}
@@ -83,15 +81,12 @@ eswitch_rxCom1_c_104:								;}
 switch_rxCom1_c_105	:								;case(105){			;105 = Gagner -> Affiche un ptit message
 			CMP rxcar,105
 			JNE eswitch_rxCom1_c_105
-
-			MOV  AL,"VOUS AVEZ GAGNER$"
-			MOV  DX OFFSET AL
 			
-			PUSH DX	
+			PUSH MSG2
 			CALL Ecrire_Chaine						;Ecrire_Chaine("VOUS AVEZ PERDU")
-			POP DX
+			POP MSG2
 			
-			MOV Valide,0							;Valide = false
+			MOV Valide, 0							;Valide = false
 			
 			JMP eswitch_rxCom1						;break
 eswitch_rxCom1_c_105:								;}

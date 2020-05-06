@@ -39,6 +39,7 @@
 			
 			RX						DW 0
 			RxNonValide				DW 1
+			ContinuerPartie 		DW 1
 			
 			
 			;MESSAGE
@@ -48,6 +49,11 @@
 			MessageInitTandy		DB '2.Tandy / PCJR$'			
 			MessageInitVGA			DB '3.VGA$'
 			MessageAttenteConnexion	DB 'En Attente Du Serveur connecte COM1$'
+			MessageVictoire			DB 'Vous avez Gagnez$'
+			MessagePerdu			DB 'Vosu Avez Perdu$'
+			MessageArretPartie		DB 'Travail Pour Gestion Projet Hiver 2020$'
+			
+			
 			
 		
 
@@ -89,7 +95,7 @@ listing: 	MOV AX, @DATA
 			CALL Ecrire_Chaine
 			POP TRASH
 
-			MOV DX, OFFSET MessageInitVGA				
+			MOV DX, OFFSET MessageInitVGA			;Ecrire_Chaine(MessageInitVGA)			
 			PUSH DX
 			
 			CALL Ecrire_Chaine						;Ecrire_Chaine(MessageInitVGA)
@@ -108,34 +114,30 @@ listing: 	MOV AX, @DATA
 			PUSh AX
 			CALL PlaceAttack
 			POP TRASH
-Do:		
+			
+Do_Main_while:									;Do{
 
-Do_while_Attente_Car_Valide:					;Do{		
+Do_while_Attente:					;Do{		
 			
 			PUSH RX
 			Call receive_Com					;receive_Com(&RxCar); // LE JEU COMMENCE PAR ATTENDRE UN CAR POUR SAVOIR QUAND CES A SON TOUR 
 			POP RX
-			;CMP RX, 0
-			;JL Do_while_Attente_Car_Valide
-			;CMP Rx, 107
-			;JG Do_while_Attente_Car_Valide		; }while (Rx < 0 || Rx > 107);
-	
+  			
+			MOV DX, OFFSET MessageVictoire
+			MOV CX, OFFSET MessagePerdu
+
+			PUSH CX			
+			PUSH DX
+			PUSH ContinuerPartie
 			PUSH RxNonValide
 			PUSH RX
-			CALL Analyse_RxCom					;RxNonValide = Analyse_RxCom(RxNonValide,RX)
+			CALL Analyse_RxCom		;RxNonValide = Analyse_RxCom(RxNonValide,RX,continuer,MessageVictoire,MessagePerdu)
 			POP Trash
 			POP RxNonValide
-			
-ewhile_Attente_Car_Valide:					
-			
-;switch_RX_ACT:												;switch(Analyse_RxCom)	
-
-;switch_RX_c_1:
-;			CMP 
-;eswitch_RX_c_1:		
-			
-
-
+			POP ContinuerPartie
+			POP TRASH
+			POP TRASH
+ewhile_Attente:			
 			PUSH Action
 			PUSH PositionGrille
 			PUSH PosCursUserX
@@ -165,26 +167,27 @@ if_main_1:									;if(Action == ' '){
 whileMain2:									;while(RxNonValide){
 			CMP RxNonValide,true
 			JNE e_whileMain2
-		
 
-			
-		
 			JMP whileMain2
 
 e_whileMain2:								;}
 
 e_if_main_1:								;}
-			MOV AX, Action
-			CMP AL,'.'
-			JE e_while1
-			JMP Do
-e_while1:			
-			
+			CMP ContinuerPartie,false				
+			JE E_Main_while
+			JMP Do_Main_while
+E_Main_while:								;}while(COntinuer != false)			
+		
+
+			MOV DX, OFFSET MessageArretPartie
+			PUSH DX
+			CALL Ecrire_Chaine						;Ecrire_Chaine(MessageArretPartie)
+			POP TRASH	
 
 
 
-eop:     MOV       AX, 4C00h
-		 INT       33
+eop:     	MOV       AX, 4C00h
+			INT       33
 
 ;===========================================================================================================================================================================			
 ;											FIN MAIN
