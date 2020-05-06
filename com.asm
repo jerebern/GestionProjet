@@ -13,6 +13,7 @@ Analyse_RxCom                          PROC NEAR					;Analyse_RxCom(RxNonValide,
 						ArretPartie		  EQU 	   <WORD PTR[BP+8]>
 						MSG1		  	  EQU 	   <WORD PTR[BP+10]>
 						MSG2			  EQU 	   <WORD PTR[BP+12]>
+						Flag1			  EQU	   <WORD PTR[BP+14]>
 						
 			 PUSH BP
 			 MOV BP,SP
@@ -42,7 +43,7 @@ eswitch_rxCom1_c_101:								;}
 switch_rxCom1_c_102	:								;case(102){ 102 = A ton tour -> Repond Case suite a un espace
 			CMP rxcar,102
 			JNE eswitch_rxCom1_c_102
-			
+			MOV 
 			MOV Valide,0							;Valide = false
 			
 			JMP eswitch_rxCom1						;break
@@ -72,7 +73,7 @@ switch_rxCom1_c_104	:								;case(104){				;104 = Perdu	 -> Affiche un ptit mes
 			PUSH MSG1	
 			CALL Ecrire_Chaine						;Ecrire_Chaine("VOUS AVEZ PERDU")
 			POP MSG1
-			
+			MOV ArretPartie,0						;ArretPartie = false
 			MOV Valide, 0							;Valide = false
 			
 			JMP eswitch_rxCom1						;break
@@ -85,8 +86,8 @@ switch_rxCom1_c_105	:								;case(105){			;105 = Gagner -> Affiche un ptit mess
 			PUSH MSG2
 			CALL Ecrire_Chaine						;Ecrire_Chaine("VOUS AVEZ PERDU")
 			POP MSG2
-			
-			MOV Valide, 0							;Valide = false
+			MOV ArretPartie,0						; ArretPartie = false
+			MOV Valide, 0							; Valide = false
 			
 			JMP eswitch_rxCom1						;break
 eswitch_rxCom1_c_105:								;}
@@ -94,6 +95,8 @@ eswitch_rxCom1_c_105:								;}
 switch_rxCom1_c_106	:								;case(106){		;106 = Continu de placer un ptit bateaux
 			CMP rxcar,106
 			JNE eswitch_rxCom1_c_106
+			
+			MOV flag1,1								; flag1 = true
 			
 			MOV Valide,0							;Valide = false
 			
@@ -177,13 +180,13 @@ Send_Com                          PROC NEAR					;void Send_Com(cartoSend)	{
 			 MOV BP,SP
 			 PUSH AX
 			 
-			MOV AX,CarToSend
-			MOV dx,0
-			MOV AH,01h						;tx(cartoSend)
-			INT 14H			 
+			 MOV AX,CarToSend
+			 MOV dx,0
+			 MOV AH,01h						;tx(cartoSend)
+			 INT 14H			 
 
 			 POP AX	
-			 MOV SP,BP
+			 MOV SP
 			 POP BP
 			 RET										;return
 	

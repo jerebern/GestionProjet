@@ -20,7 +20,7 @@
 		
 			DimX					DW	200
 			DimY					DW	320
-		
+			Index					DW	0
 	
 			PosCursUserX			DW 1
 			PosCursUserY			DW 1
@@ -41,7 +41,9 @@
 			RxNonValide				DW 1
 			ContinuerPartie 		DW 1
 			
-			
+			FlagPlacerAttaques		DW 0	
+			FlagPremierTour			DW 1
+				
 			;MESSAGE
 			
 			MessageInitEcran		DB 'Choisir un Mode Graphique : $'
@@ -54,7 +56,7 @@
 			MessageArretPartie		DB 'Travail Pour Gestion Projet Hiver 2020$'
 			
 			
-			
+		
 		
 
 	   .CODE
@@ -117,15 +119,17 @@ listing: 	MOV AX, @DATA
 			
 Do_Main_while:									;Do{
 
-Do_while_Attente:					;Do{		
+Do_while_Attente:								;Do{		
+			
+			MOV flagPlacerAttaque,false
 			
 			PUSH RX
 			Call receive_Com					;receive_Com(&RxCar); // LE JEU COMMENCE PAR ATTENDRE UN CAR POUR SAVOIR QUAND CES A SON TOUR 
 			POP RX
   			
-			MOV DX, OFFSET MessageVictoire
+			PUSH FlagPlacerAttaques
+			MOV DX, OFFSET MessageVictoire			 
 			MOV CX, OFFSET MessagePerdu
-
 			PUSH CX			
 			PUSH DX
 			PUSH ContinuerPartie
@@ -137,7 +141,13 @@ Do_while_Attente:					;Do{
 			POP ContinuerPartie
 			POP TRASH
 			POP TRASH
-ewhile_Attente:			
+			POP FlagPlacerAttaques
+			
+ewhile_Attente:									;}
+
+if_main1:	CMP FlagPlacerAttaques, true	;if(flagPlacerAttaque)	
+			JNE e_if_main1
+			
 			PUSH Action
 			PUSH PositionGrille
 			PUSH PosCursUserX
@@ -148,35 +158,47 @@ ewhile_Attente:
 			POP  PositionGrille
 			POP  Action
 	
-if_main_1:									;if(Action == ' '){
+if_main_2:									;if(Action == ' ' & flagPremierTour){
 			MOV AX,Action
 		    CMP AL,' '
-			JNE e_if_main_1
-
+			JNE e_if_main_2
+			CMP FlagPremierTour,true
+			JNE e_if_main_2
+			MOV FlagPremierTour,false				
+			MOV Index,0
+for_main1:									;for(index = 0; index < 3; index++){	
+			CMP index, 3
+			JGE	e_for_main1
+			
 			PUSH PosCursUserY
 			PUSH PosCursUserX	
 			CALL PlaceUnit					;PlaceUnit(POSX,POSY)
 			POP Trash
 			POP Trash
-					
 			PUSH PositionGrille
-			CALL Send_Com					;send_Com(Action)
-			POP trash
-					
-			MOV RxNonValide,true
-whileMain2:									;while(RxNonValide){
-			CMP RxNonValide,true
-			JNE e_whileMain2
+			CALL Send_Com					;send_Com(PositionGrille)
+			POP trash			
+			
+			INC index 
+			JMP for_main1
+	
+e_for_main1:									;}	
 
-			JMP whileMain2
+e_if_main_2:								;}
 
-e_whileMain2:								;}
+else_if_main_2:
 
-e_if_main_1:								;}
+
+				;;;///RENDU A DEVELOPPER CA QUE FAIRE POUR ENOVYER UNE ATTAQUE AU SERVEUR 
+ 
+e_else_if_main_2:
+
+e_if_main1:
+
 			CMP ContinuerPartie,false				
 			JE E_Main_while
 			JMP Do_Main_while
-E_Main_while:								;}while(COntinuer != false)			
+E_Main_while:								;}while(ContinuerPartie != false)			
 		
 
 			MOV DX, OFFSET MessageArretPartie
