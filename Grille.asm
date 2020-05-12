@@ -67,11 +67,18 @@
 
 listing: 	MOV AX, @DATA
 			MOV DS,AX
+;---------------------------------------------------------------------------------			
+			true 		   EQU 1								;#define true 1
+			false 		   EQU 0								;#define false 
+			note_Place 	   EQU 9121 
+			note_Attack	   EQU 6833
+			note_Init_Game EQU 5746 
+;---------------------------------------------------------------------------------			
 			
-			true 		  EQU 1								;#define true 1
-			false 		  EQU 0								;#define false 
-			note_Place 	  EQU 9121 
-			note_Attack	  EQU 6833
+			MOV Note,note_Init_Game
+			PUSH note
+			CALL make_Sound
+			POP Trash
 			
 			CALL Init_Com
 			
