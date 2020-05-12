@@ -29,7 +29,7 @@
 			
 			PositionGrille			DW 0
 		
-		
+			Note					DW 0
 			VieilleCouleur			DW 0
 			NouvelleCouleur 		DW 0
 			
@@ -166,6 +166,7 @@ if_main_2:									;if(Action == ' ' & flagPremierTour){
 			JNE e_if_main_2
 			MOV FlagPremierTour,false				
 			MOV Index_I,0
+				
 for_main1:									;for(index_i = 0; index_i < 3; index_i++){	
 			CMP Index_i, 3
 			JGE	e_for_main1
@@ -177,8 +178,10 @@ for_main1:									;for(index_i = 0; index_i < 3; index_i++){
 			POP Trash
 			PUSH PositionGrille
 			CALL Send_Com					;send_Com(PositionGrille)
-			POP trash			
-			
+			POP trash
+			PUSH note
+			CALL make_Sound 				;make_Sound(Note)
+			POP TRASH	
 			INC Index_I 
 			JMP for_main1
 	
@@ -217,6 +220,7 @@ eop:     	MOV       AX, 4C00h
 		INCLUDE com.asm
 		INCLUDE Graphic.asm
 		INCLUDE text.asm
+		INCLUDE note.asm
 
 
 
