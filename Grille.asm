@@ -20,7 +20,7 @@
 		
 			DimX					DW	200
 			DimY					DW	320
-			Index					DW	0
+			Index_i					DW	0
 	
 			PosCursUserX			DW 1
 			PosCursUserY			DW 1
@@ -121,7 +121,7 @@ Do_Main_while:									;Do{
 
 Do_while_Attente:								;Do{		
 			
-			MOV flagPlacerAttaque,false
+			MOV FlagPlacerAttaques,false
 			
 			PUSH RX
 			Call receive_Com					;receive_Com(&RxCar); // LE JEU COMMENCE PAR ATTENDRE UN CAR POUR SAVOIR QUAND CES A SON TOUR 
@@ -165,9 +165,9 @@ if_main_2:									;if(Action == ' ' & flagPremierTour){
 			CMP FlagPremierTour,true
 			JNE e_if_main_2
 			MOV FlagPremierTour,false				
-			MOV Index,0
-for_main1:									;for(index = 0; index < 3; index++){	
-			CMP index, 3
+			MOV Index_I,0
+for_main1:									;for(index_i = 0; index_i < 3; index_i++){	
+			CMP Index_i, 3
 			JGE	e_for_main1
 			
 			PUSH PosCursUserY
@@ -179,7 +179,7 @@ for_main1:									;for(index = 0; index < 3; index++){
 			CALL Send_Com					;send_Com(PositionGrille)
 			POP trash			
 			
-			INC index 
+			INC Index_I 
 			JMP for_main1
 	
 e_for_main1:									;}	

@@ -43,7 +43,7 @@ eswitch_rxCom1_c_101:								;}
 switch_rxCom1_c_102	:								;case(102){ 102 = A ton tour -> Repond Case suite a un espace
 			CMP rxcar,102
 			JNE eswitch_rxCom1_c_102
-			MOV 
+		
 			MOV Valide,0							;Valide = false
 			
 			JMP eswitch_rxCom1						;break
@@ -186,7 +186,7 @@ Send_Com                          PROC NEAR					;void Send_Com(cartoSend)	{
 			 INT 14H			 
 
 			 POP AX	
-			 MOV SP
+			 MOV SP,BP
 			 POP BP
 			 RET										;return
 	
