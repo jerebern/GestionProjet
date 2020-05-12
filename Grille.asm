@@ -68,9 +68,11 @@
 listing: 	MOV AX, @DATA
 			MOV DS,AX
 			
-			true EQU 1								;#define true 1
-			false EQU 0								;#define false 
-		
+			true 		  EQU 1								;#define true 1
+			false 		  EQU 0								;#define false 
+			note_Place 	  EQU 9121 
+			note_Attack	  EQU 6833
+			
 			CALL Init_Com
 			
 
@@ -179,6 +181,7 @@ for_main1:									;for(index_i = 0; index_i < 3; index_i++){
 			PUSH PositionGrille
 			CALL Send_Com					;send_Com(PositionGrille)
 			POP trash
+			MOV note,note_Place
 			PUSH note
 			CALL make_Sound 				;make_Sound(Note)
 			POP TRASH	
