@@ -117,14 +117,11 @@ listing: 	MOV AX, @DATA
 			
 			push DimX
 			push DimY
-			CALL DessinDeLaGrille			;DessinDeLaGrille(ResDimY,ResDimX);
+			CALL DessinDeLaGrille					;DessinDeLaGrille(ResDimY,ResDimX);
 			pop TRASH
 			pop Trash
 			
-			MOV AX,43
-			PUSh AX
-			CALL PlaceAttack
-			POP TRASH
+
 			
 Do_Main_while:									;Do{
 
@@ -154,9 +151,10 @@ Do_while_Attente:								;Do{
 			
 ewhile_Attente:									;}
 
-if_main1:	CMP FlagPlacerAttaques, true	;if(flagPlacerAttaque)	
-			JNE e_if_main1
-			
+if_main1:	CMP FlagPlacerAttaques, true	;if(flagPlacerAttaque)	{
+			JE if_main1_body
+			JMP e_if_main1
+if_main1_body:			
 			PUSH Action
 			PUSH PositionGrille
 			PUSH PosCursUserX
@@ -173,7 +171,7 @@ if_main_2:									;if(Action == ' ' & flagPremierTour){
 			JNE e_if_main_2
 			CMP FlagPremierTour,true
 			JNE e_if_main_2
-			MOV FlagPremierTour,false				
+				
 			MOV Index_I,0
 				
 for_main1:									;for(index_i = 0; index_i < 3; index_i++){	
@@ -195,18 +193,31 @@ for_main1:									;for(index_i = 0; index_i < 3; index_i++){
 			INC Index_I 
 			JMP for_main1
 	
-e_for_main1:									;}	
+e_for_main1:									;}
+	
+			MOV FlagPremierTour,false		 ;	FlagPremierTour = false
+			JMP e_if_main1
 
 e_if_main_2:								;}
 
-else_if_main_2:
-
-
-				;;;///RENDU A DEVELOPPER CA QUE FAIRE POUR ENOVYER UNE ATTAQUE AU SERVEUR 
+else_main_1:								;else{
+			
+			PUSh PositionGrille	
+			CALL PlaceAttack				;PlaceAtttack(PositionGrille)
+			POP TRASH	
+			PUSH PositionGrille
+			CALL Send_Com					;send_Com(PositionGrille)
+			POP trash
+			MOV note,note_Attack
+			PUSH note
+			CALL make_Sound 				;make_Sound(Note)
+			POP TRASH				
+			
+				
  
-e_else_if_main_2:
+e_else_main_1:								;}
 
-e_if_main1:
+e_if_main1:									;}
 
 			CMP ContinuerPartie,false				
 			JE E_Main_while
