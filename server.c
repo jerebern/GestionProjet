@@ -54,6 +54,7 @@ int main()
 		snprintf(player[1].ConexionType,6,"ttyS4");
 		player[1].fd = ini(player[1].ConexionType);
 		
+	//	bool Cases[100] = {false}; 
 		
 		int EtatParti;
 		
@@ -69,43 +70,74 @@ int main()
 			printf("-----------------------------\n");
 			
 			while(1){
-	
+				
+			printf("\n ==================================================== \n");
+			printf("Etat parti = %i",EtatParti);
+			printf("\n ==================================================== \n");		
 	
 			switch(EtatParti){
 		
+			//Debut de la connexion -> Attente de connexion sur ASM dans Com.ASM 
 			case 0:
-				for(i =  0; i < 2; i++){
 				
-					
+
+				for(i =  0; i < 2; i++){
+			
 				player[i].txCar = 100;
 								
 				if( Tx(player[i].fd, &player[i].txCar, 0 ) )
 					printf("Player ID : %i Tx: %c\n", player[i].ID ,player[i].txCar);
 						
-
-	
 			}
-							
-							
-			}
+														
+				EtatParti = 1;
 				break;
 				
 			case 1:
+			//Chacun des joueurs place leurs bateaux -> 
+	
+				for(i = 0; i < 2; i++){
+	
+					player[i].txCar = 106;	
+					if( Tx(player[i].fd, &player[i].txCar, 0 ) )
+					printf("Player ID : %i Tx: %c\n", player[i].ID ,player[i].txCar);
+			    	for(int j = 0; j < 3; j++ ){
+					if( Rx(player[i].fd, &player[i].rxCar, 0)) 					
+					printf("Player ID : %i A PLACER  RX: %i\n",player[i].ID	,player[i].rxCar);				
+						}
+							}	
 				
-				for(int j = 0; j < 3; j++ )
-							if( Rx(player[i].fd, &player[i].rxCar, 0)) 					
-					printf("Player ID : %i  Rx: %i\n",player[i].ID	,player[i].rxCar);	
+				EtatParti = 2;
 			
-			break;	
+				break;	
+				
+			case 2 :
+				//Chacun place ses attaques
+
+				for(i = 0; i < 2; i++){
+					player[i].txCar = 106;	
+						if( Rx(player[i].fd, &player[i].rxCar, 0)){
+								printf("Player ID : %i A Attaquer  RX: %i\n",player[i].ID	,player[i].rxCar);
+								player[i].txCar = 106;	
+						if( Tx(player[i].fd, &player[i].txCar, 0 ) )
+								printf("Player ID : %i Recois : %c\n", player[i].ID ,player[i].txCar);							
+						}			
+														
+						}
+										
+				break;
+						
+				}
+			
+				
 					
-							
+			}						
 							
 			}
 
 			printf("-----------------------------\n");
 			close(fd);
 		}
-}
 
 
 
