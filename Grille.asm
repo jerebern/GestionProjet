@@ -88,7 +88,7 @@ listing: 	MOV AX, @DATA
 			CALL Ecrire_Chaine						;Ecrire_Chaine(MessageAttenteConnexion)
 			POP Trash
 			
-			;CALL AttenteConnexion					;//A METTRE EN COMMENTAIRE SI ON VEUT TESTTER
+			CALL AttenteConnexion					;//A METTRE EN COMMENTAIRE SI ON VEUT TESTTER
 						
 		
 			MOV DX, OFFSET MessageInitEcran

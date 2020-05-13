@@ -23,8 +23,8 @@ AttenteConnexion                          PROC NEAR					;void AttenteConnexion()
 			 INT 21h
 			 
 while_Att_Con:							;while(receive_Com != 100){
-			CMP ReceiveCar,100
-			JE ewhile_Att_Con
+			 CMP ReceiveCar,100
+			 JE ewhile_Att_Con
 			
 			 
 			 MOV AH,02
@@ -58,14 +58,14 @@ switch_c_1:
 eswitch_c_1:
 
 switch_c_2:										;case 2:
-			CMP Etat_Attente,2
-			JNE eswitch_c_2
+			 CMP Etat_Attente,2
+			 JNE eswitch_c_2
 
-			MOV AH,02
-			MOV DL,'\'							;printf('\')
-			INT 21h
-			MOV Etat_Attente,0
-			JMP eswitch_Att_Con					;break;
+			 MOV AH,02
+			 MOV DL,'\'							;printf('\')
+			 INT 21h
+			 MOV Etat_Attente,0
+			 JMP eswitch_Att_Con					;break;
 eswitch_c_2:			 
 			 
 eswitch_Att_Con:			 
