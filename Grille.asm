@@ -43,6 +43,7 @@
 			
 			FlagPlacerAttaques		DW 0	
 			FlagPremierTour			DW 1
+			FlagSpace				DW 0
 				
 			;MESSAGE
 			
@@ -72,7 +73,8 @@ listing: 	MOV AX, @DATA
 			false 		   EQU 0								;#define false 
 			note_Place 	   EQU 9121 
 			note_Attack	   EQU 6833
-			note_Init_Game EQU 5746 
+			note_Init_Game EQU 5746
+			note_Dep	   EQU 4831
 ;---------------------------------------------------------------------------------			
 			
 			MOV Note,note_Init_Game
@@ -141,7 +143,7 @@ Do_while_Attente:								;Do{
 			PUSH ContinuerPartie
 			PUSH RxNonValide
 			PUSH RX
-			CALL Analyse_RxCom		;RxNonValide = Analyse_RxCom(RxNonValide,RX,continuer,MessageVictoire,MessagePerdu)
+			CALL Analyse_RxCom					;RxNonValide = Analyse_RxCom(RxNonValide,RX,continuer,MessageVictoire,MessagePerdu)
 			POP Trash
 			POP RxNonValide
 			POP ContinuerPartie
@@ -154,7 +156,10 @@ ewhile_Attente:									;}
 if_main1:	CMP FlagPlacerAttaques, true	;if(flagPlacerAttaque)	{
 			JE if_main1_body
 			JMP e_if_main1
-if_main1_body:			
+if_main1_body:
+
+Do_Main_while2: 							;Do{
+			
 			PUSH Action
 			PUSH PositionGrille
 			PUSH PosCursUserX
@@ -164,6 +169,17 @@ if_main1_body:
 			POP  PosCursUserX
 			POP  PositionGrille
 			POP  Action
+			
+			MOV Note,note_Dep
+			PUSH note
+			CALL make_Sound
+			POP Trash
+			
+			MOV AX,Action
+		    CMP AL,' '		
+			JE e_Do_Main_while2
+			JMP Do_Main_while2
+e_Do_Main_while2:							;while(action != " ")}
 	
 if_main_2:									;if(Action == ' ' & flagPremierTour){
 			MOV AX,Action
@@ -200,7 +216,11 @@ e_for_main1:									;}
 
 e_if_main_2:								;}
 
-else_main_1:								;else{
+else_if_main_1:								;else if(action == " ") {
+			
+			MOV AX,Action
+		    CMP AL,' '
+			JNE e_else_if_main_1			
 			
 			PUSh PositionGrille	
 			CALL PlaceAttack				;PlaceAtttack(PositionGrille)
@@ -213,9 +233,8 @@ else_main_1:								;else{
 			CALL make_Sound 				;make_Sound(Note)
 			POP TRASH				
 			
-				
  
-e_else_main_1:								;}
+e_else_if_main_1:								;}
 
 e_if_main1:									;}
 

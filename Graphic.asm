@@ -494,11 +494,9 @@ PlaceAttack                          PROC NEAR ;void PlaceAttack(Case){
 			MOV BP,SP
 			PUSH AX
 			
-			MOV PosX,16
-			MOV PosY,10
 			
 			MOV DX,0
-			MOV AX,33
+			MOV AX,Case
 			MOV CX,10
 			DIV CX
 			MOV Y,AX				;Y = Case / 10

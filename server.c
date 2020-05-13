@@ -103,7 +103,7 @@ int main()
 					printf("Player ID : %i Tx: %c\n", player[i].ID ,player[i].txCar);
 			    	for(int j = 0; j < 3; j++ ){
 					if( Rx(player[i].fd, &player[i].rxCar, 0)) 					
-					printf("Player ID : %i A PLACER  RX: %i\n",player[i].ID	,player[i].rxCar);				
+						printf("Player ID : %i A PLACER  RX: %i\n",player[i].ID	,player[i].rxCar);				
 						}
 							}	
 				
@@ -116,11 +116,11 @@ int main()
 
 				for(i = 0; i < 2; i++){
 					player[i].txCar = 106;	
-						if( Rx(player[i].fd, &player[i].rxCar, 0)){
-								printf("Player ID : %i A Attaquer  RX: %i\n",player[i].ID	,player[i].rxCar);
+						if( Tx(player[i].fd, &player[i].txCar, 0)){
+								printf("Player ID : %i transmission permission attaque  RX: %i\n",player[i].ID	,player[i].txCar);
 								player[i].txCar = 106;	
-						if( Tx(player[i].fd, &player[i].txCar, 0 ) )
-								printf("Player ID : %i Recois : %c\n", player[i].ID ,player[i].txCar);							
+						if( Rx(player[i].fd, &player[i].txCar, 0 ) )
+								printf("Player ID : %i Envoie à la case : %c\n", player[i].ID ,player[i].rxCar);							
 						}			
 														
 						}
